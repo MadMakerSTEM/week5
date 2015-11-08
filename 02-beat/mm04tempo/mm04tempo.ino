@@ -12,8 +12,8 @@ void loop() {
   float x = tapBeat();
 
   if (x>0){
-    averagePeriod = x/3;
-    tempo = 60000/averagePeriod;
+    //averagePeriod = //Calculate the average period between the four beats 
+    //tempo = //Calculate the average tempo in beats per minute
     Serial.print("duration (ms): ");Serial.println(x);
     Serial.print("calculated tempo: ");Serial.println(tempo);
   }
@@ -39,13 +39,22 @@ float tapBeat() {
     while (count < 4) {
       int loudness = Esplora.readMicrophone();
       if (loudness > sensitivity) {
-        if (count == 0)
-          time1 = millis();
+        time1 = millis();
         Esplora.writeGreen(128);
         delay(debounce);
         Esplora.writeGreen(0);
         count++;
         delay(wait);//wait
+        while (count < 4) {
+          loudness = Esplora.readMicrophone();
+          if (loudness > sensitivity) {
+            Esplora.writeGreen(128);
+            delay(debounce);
+            Esplora.writeGreen(0);
+            count++;
+            delay(wait);//wait
+          }
+        }
       }
     }
     time2=millis();
