@@ -11,7 +11,7 @@ void setup() {
 
 void loop() {
   randomArray();
-  int avg = calculateAverage();
+  int avg = getAverage();
   printArray(avg);
   delay(5000);
 }
