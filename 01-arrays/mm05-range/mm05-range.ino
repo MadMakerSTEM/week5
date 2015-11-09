@@ -1,57 +1,68 @@
-#include<Esplora.h>
+#include <Esplora.h>
 
-//Global Variables
-float tempo, averagePeriod;
+#define SIZE 20
+
+int randArray[SIZE];
 
 void setup() {
-  Serial.begin(9600);
-
+  randomSeed(analogRead(A9));
 }
 
 void loop() {
-  float x = tapBeat();
-
-  if (x>0){
-    averagePeriod = x/3;
-    tempo = 60000/averagePeriod;
-    Serial.print("duration (ms): ");Serial.println(x);
-    Serial.print("calculated tempo: ");Serial.println(tempo);
-  }
-
+  randomArray();
+  float avg = getAverage();
+  int maximum = getMax();
+  int minimum = getMin();
+  printResults(avg, maximum, minimum);
+  delay(5000);
 }
 
-// Special function: Measured the time for 4 beats to pass.
-float tapBeat() {
-  int wait = 50; //wait this many milliseconds as a buffer 
-  int sensitivity;
-  int count=0;
-  long elapsed, time1, time2;
-  int debounce =10; //another buffer
-  int tempo = 0;
-  float K1 = 0.9996;
-  float K2 = -72;
-  int period;
-  if (Esplora.readButton(SWITCH_1) == LOW) { // starts by pressing bottom button
-    Esplora.writeRed(255);
-    delay(1500); //wait for a second and a half for the user to get ready
-    Esplora.writeRed(0); //.. as indicated by the red light
-    sensitivity = Esplora.readSlider();
-    while (count < 4) {
-      int loudness = Esplora.readMicrophone();
-      if (loudness > sensitivity) {
-        if (count == 0)
-          time1 = millis();
-        Esplora.writeGreen(128);
-        delay(debounce);
-        Esplora.writeGreen(0);
-        count++;
-        delay(wait);//wait
-      }
-    }
-    time2=millis();
-    elapsed = time2 - time1;
-    elapsed=K1*elapsed+K2; // correction factor based on the inaccuracy of the onboard timer 
-    return elapsed;
+void randomArray() {
+  int r = 0;
+  for (int i = 0; i < SIZE; i++) {
+    r = random(100);
+    randArray[i] = r;
   }
-  return 0;
+}
+
+float getAverage() {
+  float sum = 0.0;
+  for (int i = 0; i < SIZE; i++) {
+    sum += randArray[i];
+  }
+  return sum / SIZE;
+}
+
+int getMax() {
+  int maximum = randArray[0];         // first one max
+  for (int i = 1; i < SIZE; i++) {    // go through the rest
+    // add code to find the maximum here
+  }
+  return maximum;
+}
+
+int getMin() {
+  int minimum = randArray[0];         // first one min
+  for (int i = 1; i < SIZE; i++) {    // go through the rest
+    // add code to find the minimum here
+  }
+  return minimum;
+}
+
+
+void printResults(float avg, int maximum, int minimum) {
+  for (int i = 0; i < SIZE; i++) {
+    Serial.print(randArray[i]);
+    Serial.print(" ");
+  }
+  Serial.println();
+  Serial.print("Average: ");
+  Serial.print(avg);
+  Serial.print(" Max: ");
+  Serial.print(maximum);
+  Serial.print(" Min: ");
+  Serial.print(minimum);
+  Serial.print(" Range: ");
+  Serial.print(0);            // print the range here
+  Serial.println();
 }
