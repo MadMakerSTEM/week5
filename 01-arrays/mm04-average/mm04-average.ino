@@ -43,4 +43,5 @@ void printArray(float avg) {
   Serial.println();
   Serial.print("The average is: ");
   Serial.println(avg);
+  //Serial.println(avg, 4); to print to 4 decimal places
 }
